@@ -163,7 +163,7 @@ local function UpdateTime()
 secondsLeft = secondsLeft - 1
 clockText.text = ("TimeLeft:" .. secondsLeft)
 
-if (seconds)
+if (secondsLeft == 0)
 
 local function NumericFieldListener( event )
 
