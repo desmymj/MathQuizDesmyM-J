@@ -25,7 +25,6 @@ local numericField
 local score = 0
 local answerDivision = 0
 local SquareRoot
-
 local clockText
 local totalSeconds = 10
 local secondsLeft = 10
@@ -42,19 +41,29 @@ clockText:setTextColor(155/255,180/255,1/255)
 
 --displays the correctAnswer and makes it invisible
 CorrectText = display.newText("" , display.contentWidth/4, display.contentHeight)
-    questionObject:setTextColor(155/255, 0/255, 0/255)
+    CorrectText:setTextColor(155/255, 0/255, 0/255)
     CorrectText.isVisible = false
 
-heart1 = display.newImageRect("Images/heart.png",100,100)
+    local gameover = display.newImageRect("Images/gameover.png", 1999,1999) 
+gameover.x = display.contentCenterX
+gameover.y = display.contentCenterY
+gameover.isVisible = false
+
+--displays a question and sets the colour
+questionObject = display.newText( "", display.contentWidth/3, display.contentHeight/2, nil, 35)
+questionObject:setTextColor(155/255, 42/255, 198/255)
+
+
+heart1 = display.newImageRect("Images/heart.png", 100,100)
 heart1.x = display.contentWidth * 7 / 8
 heart1.y = display.contentHeight * 1 / 7
 
-heart2 = display.newImageRect("Images/heart.png",100,100)
+heart2 = display.newImageRect("Images/heart.png", 100,100)
 heart2.x = display.contentWidth * 6 / 8
 heart2.y = display.contentHeight * 1 / 7
 
-heart3 = display.newImageRect("Images/heart.png",100,100)
-heart3.x = display.contentWidth * 5 /8
+heart3 = display.newImageRect("Images/heart.png", 100,100)
+heart3.x = display.contentWidth * 5 / 8
 heart3.y = display.contentHeight * 1 / 7
 
 local function updatehearts()
@@ -77,9 +86,9 @@ if (lives == 0) then
 	heart3.isVisible = false
 	heart2.isVisible = false
 	heart1.isVisible = false
+    gameover.isVisible = true
 end
-
-gameover.isVisible = true
+end
 
 -------------------------------------------------------------------------------------------
 --LOCAL FUNCTIONS
@@ -87,7 +96,7 @@ gameover.isVisible = true
 local function AskQuestion()
 
  -- program chooses a random number between 1-3
-   randomOperation = math.random(1,3)
+   randomOperation = math.random(1,5)
     
     --generate 2 random numbers between a max. and a min. number
     randomNumber1 = math.random(0, 25)
@@ -95,17 +104,18 @@ local function AskQuestion()
     randomNumber3 = math.random(1, 10)
     randomNumber4 = math.random(1, 10)
     randomNumber5 = math.random(50,100)
-    randomNumber7 = math.random(1,25)
+    randomNumber6 = math.random(1,25)
     randomNumber7 = math.random(3,9)
 
-    correctAnswer = randomNumber1 + randomNumber2
-
+    if (randomOperation == 1) then correctAnswer = randomNumber1 + randomNumber2
 -- create question in text object
     questionObject.text = randomNumber1 .. " + " .. randomNumber2 .. " = "
+end
    if (randomOperation == 2) then correctAnswer = randomNumber1 - randomNumber2
 --create question in text object
   questionObject.text = randomNumber1 .. " - " .. randomNumber2 .. " = "
-  elseif (correctAnswer < 0) then
+end
+  if ((correctAnswer < 0) and (randomOperation ==2 )) then
   	correctAnswer = randomNumber2 - randomNumber1
   	questionObject.text = randomNumber2 .. " - " .. randomNumber1 .. " = "
 end
@@ -114,8 +124,6 @@ if (randomOperation == 3) then correctAnswer = randomNumber3 * randomNumber4
 --create question in text object
     questionObject.text = randomNumber3 .. " * " .. randomNumber4 .. " = "
 
-
-end
 end
 
 if (randomOperation == 4) then answerDivision = randomNumber5 / randomNumber6
@@ -143,6 +151,20 @@ local function HideIncorrect()
 	AskQuestion()
 end
 
+--hides correctAnswer and asks a new queestion
+local function HideCorrectAnswer()
+	CorrectText.isVisible = false
+end
+
+--updates the timer so that seconds go down
+local function UpdateTime()
+
+--decrement the number of seconds
+secondsLeft = secondsLeft - 1
+clockText.text = ("TimeLeft:" .. secondsLeft)
+
+if (seconds)
+
 local function NumericFieldListener( event )
 
 -- User begins editing "numericField"
@@ -155,27 +177,20 @@ elseif event.phase == "submitted" then
 
 	--when the answer is submitted (enyer key is pressed) set user inout to user's answer
 	userAnswer = tonumber(event.target.text)
-
+end
 	--if the users answer and the correct answer are the same:
 	   if (userAnswer == correctAnswer) then
 		   correctObject.isVisible = true
 		   timer.performWithDelay(1000, HideCorrect)
-        else
-        incorrectAnswer.isVisible = true
-        timer.performWithDelay(1000,HideIncorrect)
-	    end
+        else lives = lives - 1
+        updatehearts()
+       incorrectAnswer.isVisisble = true
+       timer.performWithDelay(1000,HideIncorrect)
     end
 end
-
-lives = lives - 1
-updatehearts()
 -------------------------------------------------------------------------------------------
 --OBJECT CREATION
 -------------------------------------------------------------------------------------------
-
---displays a question and sets the colour
-questionObject = display.newText( "", display.contentWidth/3, display.contentHeight/2, nil, 35)
-questionObject:setTextColor(155/255, 42/255, 198/255)
 
 --create the correct text object and make it invisible
 correctObject = display.newText( "Correct!", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
@@ -199,16 +214,11 @@ incorrectAnswer.isVisible = false
 
 numericField:addEventListener( "userInput", NumericFieldListener)
 
---call the function to ask the question
-AskQuestion()
+  --call the function to ask the question
+  AskQuestion()
 
 local backgroundyouwin = display.newImageRect("Images/youwon1.gif", 1999,1999) 
 backgroundyouwin.x = display.contentCenterX
 backgroundyouwin.y = display.contentCenterY
 backgroundyouwin.isVisible = false
-
-local backgroundgameover = display.newImageRect("Images/gameover.png", 1999,1999) 
-backgroundgameover.x = display.contentCenterX
-backgroundgameover.y = display.contentCenterY
-backgroundgameover.isVisible = false
 
